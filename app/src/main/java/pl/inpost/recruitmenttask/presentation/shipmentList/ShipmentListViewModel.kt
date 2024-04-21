@@ -5,12 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.launch
-import pl.inpost.recruitmenttask.network.api.ShipmentApi
-import pl.inpost.recruitmenttask.network.model.ShipmentNetwork
+import pl.inpost.recruitmenttask.data.network.api.ShipmentApi
+import pl.inpost.recruitmenttask.data.network.model.ShipmentNetwork
 import pl.inpost.recruitmenttask.util.setState
 import javax.inject.Inject
 

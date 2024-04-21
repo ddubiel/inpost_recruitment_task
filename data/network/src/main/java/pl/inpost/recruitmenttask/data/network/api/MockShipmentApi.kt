@@ -1,13 +1,19 @@
-package pl.inpost.recruitmenttask.network.api
+package pl.inpost.recruitmenttask.data.network.api
 
 import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
-import pl.inpost.recruitmenttask.R
-import pl.inpost.recruitmenttask.network.ApiTypeAdapter
-import pl.inpost.recruitmenttask.network.model.*
+import pl.inpost.recruitmenttask.data.network.model.CustomerNetwork
+import pl.inpost.recruitmenttask.data.network.model.EventLogNetwork
+import pl.inpost.recruitmenttask.data.network.model.ShipmentNetwork
+import pl.inpost.recruitmenttask.data.network.model.ShipmentStatus
+import pl.inpost.recruitmenttask.data.network.model.ShipmentType
+import pl.inpost.recruitmenttask.data.network.model.ShipmentsResponse
+import pl.inpost.recruitmenttask.data.network.ApiTypeAdapter
+import pl.inpost.recruitmenttask.data.network.R
+import pl.inpost.recruitmenttask.data.network.model.OperationsNetwork
 import java.time.ZonedDateTime
 import kotlin.random.Random
 
