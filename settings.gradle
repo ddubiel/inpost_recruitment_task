@@ -16,3 +16,4 @@ rootProject.name = "InPost Recruitment Task"
 include ':app'
 include ':data'
 include ':data:network'
+include ':data:cache'
