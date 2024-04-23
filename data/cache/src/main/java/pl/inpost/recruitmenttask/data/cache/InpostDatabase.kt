@@ -21,6 +21,9 @@ import pl.inpost.recruitmenttask.data.cache.rook.entities.ShipmentEntity
 )
 abstract class InpostDatabase : RoomDatabase() {
 
+
+    abstract val shipmentDao: ShipmentDao
+
     companion object {
 
         private const val DATABASE_NAME = "KoleoAppDatabase"
