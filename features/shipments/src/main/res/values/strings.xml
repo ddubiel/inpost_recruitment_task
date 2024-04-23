@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shipment_number">NR PRZESYŁKI</string>
+    <string name="status">STATUS</string>
+    <string name="waiting_for_pickup">CZEKA NA ODBIÓR DO</string>
+    <string name="sender">NADAWCA</string>
+    <string name="more">więcej</string>
+</resources>
