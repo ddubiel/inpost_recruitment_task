@@ -10,8 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -29,11 +33,14 @@ import pl.inpost.recruitmenttask.data.network.model.ShipmentStatus
 import pl.inpost.recruitmenttask.features.shipments.model.ShipmentModel
 import pl.inpost.recruitmenttask.features.shipments.model.formatToStringDate
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShipmentsView(
     viewModel: ShipmentsViewModel = hiltViewModel()
 ) {
     val viewState = viewModel.uiState.collectAsState()
+    val pullRefreshState =
+        rememberPullRefreshState(viewState.value.isRefreshing, { viewModel.refresh() })
     val shipments = viewState.value.shipments
     val readyToPickupShipments = shipments.filter { it.status == ShipmentStatus.READY_TO_PICKUP }
     val otherPickupShipments = shipments.filter { it.status != ShipmentStatus.READY_TO_PICKUP }
@@ -41,9 +48,13 @@ fun ShipmentsView(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF2F2F2))
+            .pullRefresh(pullRefreshState)
     ) {
+
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            readyToPickupShipments.takeIf { it.isNotEmpty() }?.let { shipments ->
+            readyToPickupShipments
+                .takeIf { it.isNotEmpty() }
+                ?.sortedByDescending { it.operations.highlight }?.let { shipments ->
                 item {
                     Text(
                         modifier = Modifier
@@ -80,7 +91,14 @@ fun ShipmentsView(
                 }
             }
         }
+        PullRefreshIndicator(
+            viewState.value.isRefreshing,
+            pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+
     }
+
 }
 
 @Composable

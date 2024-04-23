@@ -33,10 +33,17 @@ class ShipmentsViewModel @Inject constructor(
     }
 
     private fun refreshData() = viewModelScope.launch {
+        _uiState.update { currentState ->
+            currentState.copy(isRefreshing = true)
+        }
         val shipments = shipmentApi.getShipments()
         _uiState.update { currentState ->
-            currentState.copy(shipments = shipments.asDomainModel())
+            currentState.copy(shipments = shipments.asDomainModel(), isRefreshing = false)
         }
+    }
+
+    fun refresh() {
+        refreshData()
     }
 
 
@@ -84,5 +91,6 @@ private fun OperationsNetwork.asDomainModel() = OperationsModel(
 
 
 data class ShipmentsViewState(
-    val shipments: List<ShipmentModel>
+    val shipments: List<ShipmentModel>,
+    val isRefreshing: Boolean = false
 )
