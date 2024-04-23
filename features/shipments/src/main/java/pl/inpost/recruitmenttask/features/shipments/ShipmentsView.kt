@@ -2,6 +2,7 @@ package pl.inpost.recruitmenttask.features.shipments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -50,7 +52,6 @@ fun ShipmentsView(
             .background(Color(0xFFF2F2F2))
             .pullRefresh(pullRefreshState)
     ) {
-
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             readyToPickupShipments
                 .takeIf { it.isNotEmpty() }
@@ -66,7 +67,9 @@ fun ShipmentsView(
                     )
                 }
                 items(count = shipments.size) {
-                    ShipmentListItem(shipments[it])
+                    ShipmentListItem(shipments[it]) { shipmentNumber ->
+viewModel.archiveShipment(shipmentNumber)
+                    }
                     if (shipments.size > it + 1) {
                         Spacer(modifier = Modifier.padding(16.dp))
                     }
@@ -84,7 +87,9 @@ fun ShipmentsView(
                     )
                 }
                 items(count = shipments.size) {
-                    ShipmentListItem(shipments[it])
+                    ShipmentListItem(shipments[it]) { shipmentNumber ->
+                        viewModel.archiveShipment(shipmentNumber)
+                    }
                     if (shipments.size > it + 1) {
                         Spacer(modifier = Modifier.padding(16.dp))
                     }
@@ -102,9 +107,8 @@ fun ShipmentsView(
 }
 
 @Composable
-fun ShipmentListItem(shipmentModel: ShipmentModel) {
+fun ShipmentListItem(shipmentModel: ShipmentModel, onMoreClicked: (String) -> Unit) {
     Surface(modifier = Modifier, elevation = 5.dp) {
-
 
         ConstraintLayout(
             modifier = Modifier
@@ -193,10 +197,15 @@ fun ShipmentListItem(shipmentModel: ShipmentModel) {
                 )
             }
 
-            Row(modifier = Modifier.constrainAs(more) {
-                bottom.linkTo(sender.bottom)
-                end.linkTo(parent.end)
-            }) {
+            Row(modifier = Modifier
+                .constrainAs(more) {
+                    bottom.linkTo(sender.bottom)
+                    end.linkTo(parent.end)
+
+                }
+                .clickable {
+                    onMoreClicked(shipmentModel.number)
+                }) {
                 Text(
                     text = stringResource(R.string.more),
                     color = Color(0xFF404041),

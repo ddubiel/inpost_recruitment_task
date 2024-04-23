@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import pl.inpost.recruitmenttask.data.cache.rook.entities.CustomerEntity
 import pl.inpost.recruitmenttask.data.cache.rook.entities.EventLogEntity
 import pl.inpost.recruitmenttask.data.cache.rook.entities.OperationsEntity
@@ -19,8 +20,8 @@ import pl.inpost.recruitmenttask.data.cache.rook.entities.ShipmentEntity
     version = 1,
     exportSchema = false
 )
+@TypeConverters(DBTypeConverters::class)
 abstract class InpostDatabase : RoomDatabase() {
-
 
     abstract val shipmentDao: ShipmentDao
 

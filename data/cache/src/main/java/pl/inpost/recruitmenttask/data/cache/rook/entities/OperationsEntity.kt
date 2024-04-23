@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "operations_entity")
 data class OperationsEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "manualArchive") val manualArchive: Boolean,
     @ColumnInfo(name = "delete") val delete: Boolean,
     @ColumnInfo(name = "collect") val collect: Boolean,

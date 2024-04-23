@@ -5,9 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.time.ZonedDateTime
 
-@Entity(tableName = "shipment_entity")
+@Entity(tableName = "event_log_entity")
 data class EventLogEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "date") val date: ZonedDateTime
+    @ColumnInfo(name = "date") val date: String?
 )
