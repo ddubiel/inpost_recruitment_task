@@ -5,4 +5,8 @@
     <string name="waiting_for_pickup">CZEKA NA ODBIÓR DO</string>
     <string name="sender">NADAWCA</string>
     <string name="more">więcej</string>
+    <string name="inpost_recruitment_task">InPost recruitment task</string>
+    <string name="gotowe_do_odbioru">Gotowe do odbioru</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

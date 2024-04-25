@@ -3,6 +3,7 @@ package pl.inpost.recruitmenttask.features.shipments
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,15 +12,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
-import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import pl.inpost.recruitmenttask.data.network.model.ShipmentStatus
 import pl.inpost.recruitmenttask.features.shipments.model.ShipmentModel
 import pl.inpost.recruitmenttask.features.shipments.model.formatToStringDate
@@ -40,7 +47,14 @@ import pl.inpost.recruitmenttask.features.shipments.model.formatToStringDate
 fun ShipmentsView(
     viewModel: ShipmentsViewModel = hiltViewModel()
 ) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(
+        color = Color.White
+    )
     val viewState = viewModel.uiState.collectAsState()
+    var modifiedShipmentNumber by remember {
+        mutableStateOf<String?>(null)
+    }
     val pullRefreshState =
         rememberPullRefreshState(viewState.value.isRefreshing, { viewModel.refresh() })
     val shipments = viewState.value.shipments
@@ -52,48 +66,87 @@ fun ShipmentsView(
             .background(Color(0xFFF2F2F2))
             .pullRefresh(pullRefreshState)
     ) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            readyToPickupShipments
-                .takeIf { it.isNotEmpty() }
-                ?.sortedByDescending { it.operations.highlight }?.let { shipments ->
-                item {
-                    Text(
-                        modifier = Modifier
-                            .padding(vertical = 16.dp)
-                            .fillMaxSize(),
-                        text = "Gotowe do odbioru",
-                        textAlign = TextAlign.Center,
-                        style = Typography.h1
-                    )
-                }
-                items(count = shipments.size) {
-                    ShipmentListItem(shipments[it]) { shipmentNumber ->
-viewModel.archiveShipment(shipmentNumber)
+        Column {
+            Text(
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                text = stringResource(R.string.inpost_recruitment_task),
+                style = Typography.h1
+            )
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                readyToPickupShipments
+                    .takeIf { it.isNotEmpty() }
+                    ?.sortedByDescending { it.operations.highlight }?.let { shipments ->
+                        item {
+                            Text(
+                                modifier = Modifier
+                                    .padding(vertical = 16.dp)
+                                    .fillMaxSize(),
+                                text = stringResource(R.string.gotowe_do_odbioru),
+                                textAlign = TextAlign.Center,
+                                style = Typography.h1
+                            )
+                        }
+                        items(count = shipments.size) {
+                            ShipmentListItem(shipments[it]) { shipmentNumber ->
+                                modifiedShipmentNumber = shipmentNumber
+                            }
+                            if (shipments.size > it + 1) {
+                                Spacer(modifier = Modifier.padding(16.dp))
+                            }
+                        }
                     }
-                    if (shipments.size > it + 1) {
-                        Spacer(modifier = Modifier.padding(16.dp))
+                otherPickupShipments.takeIf { it.isNotEmpty() }?.let { shipments ->
+                    item {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(vertical = 16.dp),
+                            text = "Pozostałe",
+                            textAlign = TextAlign.Center,
+                            style = Typography.h1
+                        )
+                    }
+                    items(count = shipments.size) {
+                        ShipmentListItem(shipments[it]) { shipmentNumber ->
+                            modifiedShipmentNumber = shipmentNumber
+                        }
+                        if (shipments.size > it + 1) {
+                            Spacer(modifier = Modifier.padding(16.dp))
+                        }
                     }
                 }
             }
-            otherPickupShipments.takeIf { it.isNotEmpty() }?.let { shipments ->
-                item {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 16.dp),
-                        text = "Pozostałe",
-                        textAlign = TextAlign.Center,
-                        style = Typography.h1
-                    )
-                }
-                items(count = shipments.size) {
-                    ShipmentListItem(shipments[it]) { shipmentNumber ->
-                        viewModel.archiveShipment(shipmentNumber)
+            if (modifiedShipmentNumber != null) {
+                AlertDialog(
+                    modifier = Modifier.padding(20.dp),
+                    onDismissRequest = {
+                        modifiedShipmentNumber = null
+                    },
+                    buttons = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Button(onClick = {
+                                viewModel.archiveShipment(modifiedShipmentNumber.toString())
+                                modifiedShipmentNumber = null
+                            }) {
+                                Text(text = stringResource(R.string.yes))
+                            }
+                            Button(onClick = { modifiedShipmentNumber = null }) {
+                                Text(text = stringResource(R.string.no))
+                            }
+                        }
+                    },
+                    text = {
+                        Text(text = "Do you want to archive shipment number ${modifiedShipmentNumber}?")
                     }
-                    if (shipments.size > it + 1) {
-                        Spacer(modifier = Modifier.padding(16.dp))
-                    }
-                }
+                )
             }
         }
         PullRefreshIndicator(
