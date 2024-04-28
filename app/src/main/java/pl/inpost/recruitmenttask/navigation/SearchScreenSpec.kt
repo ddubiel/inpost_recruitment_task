@@ -1,11 +1,10 @@
 package pl.inpost.recruitmenttask.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import pl.inpost.recruitmenttask.features.shipments.ShipmentsViewModel
+import pl.inpost.recruitmenttask.features.shipments.viewmodel.ShipmentsViewModel
 
 
 data object ShipmentsScreenSpec : ScreenSpec {

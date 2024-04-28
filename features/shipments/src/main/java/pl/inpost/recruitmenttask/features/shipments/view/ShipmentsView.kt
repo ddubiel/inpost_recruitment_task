@@ -1,4 +1,4 @@
-package pl.inpost.recruitmenttask.features.shipments
+package pl.inpost.recruitmenttask.features.shipments.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,8 +39,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import pl.inpost.recruitmenttask.data.network.model.ShipmentStatus
+import pl.inpost.recruitmenttask.features.shipments.R
+import pl.inpost.recruitmenttask.features.shipments.Typography
 import pl.inpost.recruitmenttask.features.shipments.model.ShipmentModel
 import pl.inpost.recruitmenttask.features.shipments.model.formatToStringDate
+import pl.inpost.recruitmenttask.features.shipments.viewmodel.ShipmentActions
+import pl.inpost.recruitmenttask.features.shipments.viewmodel.ShipmentsViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -48,6 +52,7 @@ fun ShipmentsView(
     viewModel: ShipmentsViewModel = hiltViewModel()
 ) {
     val systemUiController = rememberSystemUiController()
+    val shipmentActions = viewModel as ShipmentActions
     systemUiController.setSystemBarsColor(
         color = Color.White
     )
@@ -56,10 +61,11 @@ fun ShipmentsView(
         mutableStateOf<String?>(null)
     }
     val pullRefreshState =
-        rememberPullRefreshState(viewState.value.isRefreshing, { viewModel.refresh() })
+        rememberPullRefreshState(viewState.value.isRefreshing, { shipmentActions.refreshData() })
     val shipments = viewState.value.shipments
     val readyToPickupShipments = shipments.filter { it.status == ShipmentStatus.READY_TO_PICKUP }
     val otherPickupShipments = shipments.filter { it.status != ShipmentStatus.READY_TO_PICKUP }
+        .toList().sortedBy { it.status }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -133,7 +139,7 @@ fun ShipmentsView(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Button(onClick = {
-                                viewModel.archiveShipment(modifiedShipmentNumber.toString())
+                                shipmentActions.archiveShipment(modifiedShipmentNumber.toString())
                                 modifiedShipmentNumber = null
                             }) {
                                 Text(text = stringResource(R.string.yes))

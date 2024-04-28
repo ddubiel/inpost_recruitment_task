@@ -8,7 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import pl.inpost.recruitmenttask.features.shipments.ShipmentsView
+import pl.inpost.recruitmenttask.features.shipments.view.ShipmentsView
 import pl.inpost.recruitmenttask.ui.theme.InpostTheme
 
 @AndroidEntryPoint
