@@ -4,5 +4,6 @@ import pl.inpost.recruitmenttask.features.shipments.model.ShipmentModel
 
 data class ShipmentsViewState(
     val shipments: List<ShipmentModel>,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val shipmentsOrder: ShipmentsOrder = ShipmentsOrder.STATUS
 )

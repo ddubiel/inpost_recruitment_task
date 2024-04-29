@@ -9,4 +9,11 @@
     <string name="gotowe_do_odbioru">Gotowe do odbioru</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="status_order_name">Status</string>
+    <string name="pickup_date">Pickup date</string>
+    <string name="expire_date">Expire date</string>
+    <string name="stored_date">Stored date</string>
+    <string name="number">Number</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import pl.inpost.recruitmenttask.features.shipments.model.ShipmentModel
 import pl.inpost.recruitmenttask.features.shipments.model.ShipmentsRepository
 import javax.inject.Inject
 
@@ -36,6 +37,20 @@ class ShipmentsViewModel @Inject constructor(
                 currentState.copy(isRefreshing = true)
             }
             shipmentsRepository.getAndCacheShipments()
+        }
+    }
+
+    override fun setShipmentOrder(selectedOption: ShipmentsOrder) {
+        _uiState.update { currentState ->
+            currentState.copy(shipments = currentState.shipments.toList().sortedBy {
+                when (selectedOption) {
+                    ShipmentsOrder.STATUS -> it.status.name
+                    ShipmentsOrder.PICKUP_DATE -> it.pickUpDate?.toString()
+                    ShipmentsOrder.EXPIRE_DATE -> it.expiryDate?.toString()
+                    ShipmentsOrder.STORED_DATE -> it.storedDate?.toString()
+                    ShipmentsOrder.NUMBER -> it.number
+                }
+            })
         }
     }
 
